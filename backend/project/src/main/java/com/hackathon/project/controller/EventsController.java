@@ -1,6 +1,5 @@
 package com.hackathon.project.controller;
 
-import com.hackathon.project.controller.dto.GeoQueryContext;
 import com.hackathon.project.repository.mongo.EventRepository;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import lombok.AllArgsConstructor;
 
@@ -34,12 +34,16 @@ public class EventsController {
 
 	@GetMapping(value = "/events-nearby")
 	@CrossOrigin
-	public ResponseEntity<List<Event>> eventsNearby(@RequestBody GeoQueryContext geoQueryContext) {
+	public ResponseEntity<List<Event>> eventsNearby(
+		@RequestParam double radius,
+		@RequestParam double longitude,
+		@RequestParam double latitude,
+    	@RequestParam int limit) {
 
 		GeoResults<Event> eventGeoResults = eventRepository.findEventsNearBy(
-			new Point(geoQueryContext.getLongitude(), geoQueryContext.getLatitude()), 
-			new Distance(geoQueryContext.getRadius(), Metrics.MILES),
-			new LimitOperation(geoQueryContext.getLimit()));
+			new Point(longitude, latitude), 
+			new Distance(radius, Metrics.MILES),
+			new LimitOperation(limit));
 		List<Event> list = eventGeoResults.getContent()
 			.stream()
 			.map(GeoResult::getContent)
