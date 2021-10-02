@@ -12,6 +12,10 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
 import { styled } from '@mui/material/styles';
 import ReactDOM from "react-dom";
 
@@ -23,7 +27,8 @@ mapboxgl.accessToken = "pk.eyJ1IjoicXVvdGVkb3RsYWQiLCJhIjoiY2t1OTVqMmJ1MDE2NDJyc
 function App() {
   const useStyles = makeStyles(theme => ({
     buttonGrid: {
-      minHeight: '30px'
+      minHeight: '30px',
+      marginTop: '10px'
     },
     button: {
       display: 'flex',
@@ -40,7 +45,7 @@ function App() {
   const [lng, setLng] = useState(-96.8191214);
   const [lat, setLat] = useState(33.1005264);
   const [zoom, setZoom] = useState(8);
-  const [radius, setRadius] = useState(5.0);
+  const [radius, setRadius] = useState(10.0);
   const [events, setEvents] = useState();
   
 
@@ -113,6 +118,10 @@ function App() {
     getEvents(radius, lng, lat, 20);
   }
 
+  const handleRadiusChange = (event) => {
+    setRadius(event.target.value);
+  };
+
   useEffect(() => {
     if (map.current) return; // initialize map only once
     map.current = new mapboxgl.Map({
@@ -133,33 +142,33 @@ function App() {
       });
 
       map.current.on('load', () => {
+        // Add the control to the map.
+        map.current.addControl(
+          new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            mapboxgl: mapboxgl
+          }), 'top-left'
+        );
+
+        // Add geolocate control to the map.
+        map.current.addControl(
+          new mapboxgl.GeolocateControl({
+            positionOptions: {
+            enableHighAccuracy: true
+            },
+            // When active the map will receive updates to the device's location as it changes.
+            trackUserLocation: true
+          })
+        );
+
+        // Add zoom and rotation controls to the map.
+        map.current.addControl(new mapboxgl.NavigationControl());
+        
         map.current.loadImage(
           'https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png',
           (error, image) => {
             if (error) throw error;
             map.current.addImage('custom-marker', image);
-
-            // Add the control to the map.
-            map.current.addControl(
-              new MapboxGeocoder({
-                accessToken: mapboxgl.accessToken,
-                mapboxgl: mapboxgl
-              }), 'top-left'
-            );
-
-            // Add geolocate control to the map.
-            map.current.addControl(
-              new mapboxgl.GeolocateControl({
-                positionOptions: {
-                enableHighAccuracy: true
-                },
-                // When active the map will receive updates to the device's location as it changes.
-                trackUserLocation: true
-              })
-            );
- 
-            // Add zoom and rotation controls to the map.
-            map.current.addControl(new mapboxgl.NavigationControl());
             
             map.current.addSource('points', {
               'type': 'geojson',
@@ -236,11 +245,27 @@ function App() {
         <Grid item justify="center" xs={4}>
           <Box style={{maxHeight: '100%', overflow: 'auto'}} className="ListParent" >
             <Grid item 
+              p={2}
               align="center"
               className={classes.buttonGrid}>
-              <Button className={classes.button} variant="contained" onClick={() => searchArea()}>
-                search this area
-              </Button>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Radius</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={radius}
+                  label="Radius"
+                  onChange={handleRadiusChange}
+                >
+                  <MenuItem value={10}>10</MenuItem>
+                  <MenuItem value={20}>20</MenuItem>
+                  <MenuItem value={30}>30</MenuItem>
+                </Select>
+                <br/>
+                <Button className={classes.button} variant="contained" onClick={searchArea}>
+                  search this area
+                </Button>
+              </FormControl>
             </Grid>
             <Item>
               <EventList text="single-line item from prop"/>
