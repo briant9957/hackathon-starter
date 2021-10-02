@@ -10,6 +10,7 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { makeStyles } from '@mui/styles'
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import ReactDOM from "react-dom";
@@ -232,18 +233,19 @@ function App() {
 
     return (
       <Grid container component={Paper} >
-        <Grid item 
-            justify="center" xs={4}>
-          <Grid item 
-            align="center"
-            className={classes.buttonGrid}>
-            <Button className={classes.button} variant="contained" onClick={() => searchArea()}>
-              search this area
-            </Button>
-          </Grid>
-          <Item>
-            <EventList text="single-line item from prop"/>
-          </Item>
+        <Grid item justify="center" xs={4}>
+          <Box style={{maxHeight: '100%', overflow: 'auto'}} className="ListParent" >
+            <Grid item 
+              align="center"
+              className={classes.buttonGrid}>
+              <Button className={classes.button} variant="contained" onClick={() => searchArea()}>
+                search this area
+              </Button>
+            </Grid>
+            <Item>
+              <EventList text="single-line item from prop"/>
+            </Item>
+          </Box>
         </Grid>
         <Grid item xs={8}>
           <div ref={mapContainer} className="map-container" />
