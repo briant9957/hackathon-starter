@@ -14,9 +14,9 @@ class EventList extends Component {
         }
 
         return (
-            <List dense={false}>
+            <List className="ListParent" dense={false}>
               {generate(
-                <ListItem>
+                <ListItem className="ListItem">
                   <ListItemText
                     primary="Single-line item"
                     secondary={false ? 'Secondary text' : null}
