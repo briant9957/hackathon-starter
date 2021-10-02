@@ -5,6 +5,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
+import { styled } from '@mui/material/styles';
 
 
 mapboxgl.accessToken = "pk.eyJ1IjoicXVvdGVkb3RsYWQiLCJhIjoiY2t1OTVqMmJ1MDE2NDJycDR4MWhkODliOCJ9.lRkX5bD32vEYwa2Bs-6lew";
@@ -15,6 +16,13 @@ function App() {
   const [lng, setLng] = useState(-70.9);
   const [lat, setLat] = useState(42.35);
   const [zoom, setZoom] = useState(9);
+
+  const Item = styled(Paper)(({ theme }) => ({
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  }));
 
   useEffect(() => {
     if (map.current) return; // initialize map only once
@@ -87,10 +95,14 @@ function App() {
       // <div style={{display: "flex"}}>
         <div>
           <Grid container component={Paper}>
-            <EventList />
-            <div style={{flexGrow: 2}}>
+            <Grid item xs={4}>
+              <Item>
+                <EventList />
+              </Item>
+            </Grid>
+            <Grid item xs={8}>
               <div ref={mapContainer} className="map-container" />
-            </div>
+            </Grid>
           </Grid>
       </div>
       );
