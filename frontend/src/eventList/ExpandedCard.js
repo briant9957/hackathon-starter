@@ -19,10 +19,12 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 export default function ExpandedCard(props) {
   const useStyles = makeStyles(theme => ({
-    root: {
+    icons: {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'left',
+      'margin-top': '5px'
+      
     },
   }));  
 
@@ -50,10 +52,7 @@ export default function ExpandedCard(props) {
             {/* {props.activityDescription} */}
             Come on down and walk around!! It's really fun 123123123132212 31231231231231231231
           </Typography>
-          <Typography>
-            Set aside off of the heat to let rest for 10 minutes, and then serve.
-          </Typography>
-        <IconButton className={classes.root} aria-label="add to favorites" >
+        <IconButton className={classes.icons} aria-label="add to favorites" >
           <FavoriteIcon />
         </IconButton>
         </CardContent>
