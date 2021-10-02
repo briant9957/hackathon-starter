@@ -2,7 +2,6 @@ import logo from './logo.svg';
 import './App.css';
 import EventList from './eventList';
 import MarkerPopUp from './markerPopUp';
-import Map from './map';
 import React, { useRef, useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import Grid from '@mui/material/Grid';
@@ -24,8 +23,8 @@ function App() {
 
   const Item = styled(Paper)(({ theme }) => ({
     ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
+    //padding: theme.spacing(1),
+    textAlign: 'left',
     color: theme.palette.text.secondary,
   }));
 

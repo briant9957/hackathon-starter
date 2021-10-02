@@ -1,11 +1,11 @@
 import React from 'react';
-import Button from '@mui/material/Button';
+import RegisterButton from '../RegisterButton';
 
 function MarkerPopUp(props) {
     return (
         <div>
             <h3>{props.title}</h3><p>{props.description}</p>
-            <Button variant="outlined">Register</Button>
+            <RegisterButton />
         </div>
     )
 }

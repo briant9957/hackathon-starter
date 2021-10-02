@@ -4,7 +4,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Card from '@mui/material/Card';
 import { CardContent } from '@mui/material';
-import ExpandedCard from './ExpandedCard';
+import ExpandedCard from './EventCard';
 
 export default function EventList(props) {
   function generate(element) {

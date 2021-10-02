@@ -1,6 +1,6 @@
 .map-container {
   position: relative;
-  height: 90vh;
+  height: 100%;
   width: 100%;
 }
 
@@ -15,5 +15,9 @@
 }
 
 .ListParent {
-  height: 90vh;
+  height: 100vh;
+}
+
+.register-button {
+  margin-top: 50px;
 }
