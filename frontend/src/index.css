@@ -1,6 +1,11 @@
+
+body {
+  margin: 0px;
+}
+
 .map-container {
   position: relative;
-  height: 90vh;
+  height: 100%;
   width: 100%;
 }
 

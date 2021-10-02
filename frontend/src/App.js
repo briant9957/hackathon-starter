@@ -4,11 +4,14 @@ import EventList from './eventList';
 import MarkerPopUp from './markerPopUp';
 import React, { useRef, useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+
+import { makeStyles } from '@mui/styles'
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
-import * as turf from "@turf/turf";
 import ReactDOM from "react-dom";
 
 
@@ -17,6 +20,19 @@ import backend from './api/backend';
 mapboxgl.accessToken = "pk.eyJ1IjoicXVvdGVkb3RsYWQiLCJhIjoiY2t1OTVqMmJ1MDE2NDJycDR4MWhkODliOCJ9.lRkX5bD32vEYwa2Bs-6lew";
 
 function App() {
+  const useStyles = makeStyles(theme => ({
+    buttonGrid: {
+      minHeight: '30px'
+    },
+    button: {
+      display: 'flex',
+      justify: 'center',
+      margin: '5px'
+    },
+  }));  
+
+  const classes = useStyles();
+
   const mapContainer = useRef(null);
   const popUpRef = useRef(new mapboxgl.Popup({ offset: 15 }))
   const map = useRef(null);
@@ -25,10 +41,6 @@ function App() {
   const [zoom, setZoom] = useState(8);
   const [radius, setRadius] = useState(5.0);
   const [events, setEvents] = useState();
-
-  var options = { steps: 100, units: "miles", properties: { foo: "bar" } };
-  var center = [lng, lat];
-  var circle = turf.circle(center, radius, options);
   
 
   const Item = styled(Paper)(({ theme }) => ({
@@ -107,6 +119,7 @@ function App() {
         style: 'mapbox://styles/mapbox/streets-v11',
         center: [lng, lat],
         zoom: zoom,
+        attributionControl: false
       });
     });
 
@@ -125,6 +138,14 @@ function App() {
             if (error) throw error;
             map.current.addImage('custom-marker', image);
 
+            // Add the control to the map.
+            map.current.addControl(
+              new MapboxGeocoder({
+                accessToken: mapboxgl.accessToken,
+                mapboxgl: mapboxgl
+              }), 'top-left'
+            );
+
             // Add geolocate control to the map.
             map.current.addControl(
               new mapboxgl.GeolocateControl({
@@ -135,6 +156,9 @@ function App() {
                 trackUserLocation: true
               })
             );
+ 
+            // Add zoom and rotation controls to the map.
+            map.current.addControl(new mapboxgl.NavigationControl());
             
             map.current.addSource('points', {
               'type': 'geojson',
@@ -207,21 +231,25 @@ function App() {
     });
 
     return (
-      // <div style={{display: "flex"}}>
-        <div>
-          <Button variant="contained" onClick={() => searchArea()}>search this area</Button>
-          <Grid container component={Paper}>
-            <Grid item xs={4}>
-              <Item>
-                <EventList text="single-line item from prop"/>
-              </Item>
-            </Grid>
-            <Grid item xs={8}>
-              <div ref={mapContainer} className="map-container" />
-            </Grid>
+      <Grid container component={Paper} >
+        <Grid item 
+            justify="center" xs={4}>
+          <Grid item 
+            align="center"
+            className={classes.buttonGrid}>
+            <Button className={classes.button} variant="contained" onClick={() => searchArea()}>
+              search this area
+            </Button>
           </Grid>
-      </div>
-      );
+          <Item>
+            <EventList text="single-line item from prop"/>
+          </Item>
+        </Grid>
+        <Grid item xs={8}>
+          <div ref={mapContainer} className="map-container" />
+        </Grid>
+      </Grid>
+    );
 }
 
 export default App;
