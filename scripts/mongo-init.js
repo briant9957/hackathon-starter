@@ -1,5 +1,5 @@
 db = db.getSiblingDB("hackathonDB");
-db.example.drop();
+db.event.drop();
 
 db.example.insertOne( {
     hackathon : "HackDFW" , 
