@@ -24,8 +24,7 @@ class ConnectionCheck extends Component {
     render() {
         return (
             <div>
-                <div>{this.state.hackathon}</div>
-                <div>{this.state.location}</div>
+                
             </div>
         )
     }
