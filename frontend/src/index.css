@@ -2,13 +2,20 @@
   position: relative;
   height: 90vh;
   width: 100%;
-  padding-left: 5%;
-  }
+}
+
+.card-style {
+  display: 'block';
+  width: '30vw';
+  height: '45vw';
+  background-color: aqua;
+}
 
 .ListItem {
-  
+  margin-bottom: 5px;
+  padding-bottom: 50px;
 }
 
 .ListParent {
-
+  height: 90vh;
 }

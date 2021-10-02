@@ -13,8 +13,8 @@ mapboxgl.accessToken = "pk.eyJ1IjoicXVvdGVkb3RsYWQiLCJhIjoiY2t1OTVqMmJ1MDE2NDJyc
 function App() {
   const mapContainer = useRef(null);
   const map = useRef(null);
-  const [lng, setLng] = useState(-70.9);
-  const [lat, setLat] = useState(42.35);
+  const [lng, setLng] = useState(-96.8191214);
+  const [lat, setLat] = useState(33.1005264);
   const [zoom, setZoom] = useState(9);
 
   const Item = styled(Paper)(({ theme }) => ({
@@ -27,10 +27,10 @@ function App() {
   useEffect(() => {
     if (map.current) return; // initialize map only once
     map.current = new mapboxgl.Map({
-    container: mapContainer.current,
-    style: 'mapbox://styles/mapbox/streets-v11',
-    center: [lng, lat],
-    zoom: zoom
+        container: mapContainer.current,
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: [lng, lat],
+        zoom: zoom
       });
     });
 
@@ -49,6 +49,17 @@ function App() {
             if (error) throw error;
             map.current.addImage('custom-marker', image);
 
+            // Add geolocate control to the map.
+            map.current.addControl(
+              new mapboxgl.GeolocateControl({
+                positionOptions: {
+                enableHighAccuracy: true
+                },
+                // When active the map will receive updates to the device's location as it changes.
+                trackUserLocation: true
+              })
+            );
+            
             map.current.addSource('points', {
               'type': 'geojson',
               'data': {
@@ -97,7 +108,7 @@ function App() {
           <Grid container component={Paper}>
             <Grid item xs={4}>
               <Item>
-                <EventList />
+                <EventList text="single-line item from prop"/>
               </Item>
             </Grid>
             <Grid item xs={8}>
