@@ -1,7 +1,8 @@
 db = db.getSiblingDB("hackathonDB");
 db.event.drop();
 
-db.example.insertOne( {
-    hackathon : "HackDFW" , 
-    location : "Frisco"
-});
+db.event.createIndex({ location: "2dsphere" })
+
+// db.event.insertOne({
+
+// });
