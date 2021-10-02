@@ -6,7 +6,7 @@ import Card from '@mui/material/Card';
 import { CardContent } from '@mui/material';
 import ExpandedCard from './ExpandedCard';
 
-function EventList(props) {
+export default function EventList(props) {
   function generate(element) {
     return [0, 1, 2].map((value) =>
       React.cloneElement(element, {
