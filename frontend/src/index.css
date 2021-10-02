@@ -8,14 +8,16 @@
   display: 'block';
   width: '30vw';
   height: '45vw';
-  background-color: aqua;
 }
 
 .ListItem {
   margin-bottom: 5px;
-  padding-bottom: 50px;
 }
 
 .ListParent {
   height: 90vh;
+}
+
+.fav-button {
+  justify-content: left;
 }
