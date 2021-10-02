@@ -1,6 +1,8 @@
 package com.hackathon.project.controller;
 
 import com.hackathon.project.repository.mongo.EventRepository;
+import java.util.List;
+
 import com.hackathon.project.repository.mongo.MongoHackathonRepository;
 import com.hackathon.project.repository.mongo.model.Event;
 import com.hackathon.project.repository.mongo.model.Example;
@@ -29,4 +31,9 @@ public class ConnectionCheckController {
 	public ResponseEntity<Event> createEvent(@RequestBody Event event){
 		return ResponseEntity.ok(eventRepository.insert(event));
 	}
+	// @GetMapping(value = "/events-nearby")
+	// @CrossOrigin
+	// public ResponseEntity<List<Events>> eventsNearby(@RequestBody(required = true) int radius, @RequestBody(required = false) int limit) {
+	// 	return ResponseEntity.ok("");
+	// }
 }
