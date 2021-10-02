@@ -108,7 +108,7 @@ function App() {
           <Grid container component={Paper}>
             <Grid item xs={4}>
               <Item>
-                <EventList />
+                <EventList text="single-line item from prop"/>
               </Item>
             </Grid>
             <Grid item xs={8}>
