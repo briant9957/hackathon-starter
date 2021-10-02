@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import EventList from './eventList';
+import MarkerPopUp from './markerPopUp';
 import React, { useRef, useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import Button from '@mui/material/Button';
@@ -8,6 +9,8 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import * as turf from "@turf/turf";
+import ReactDOM from "react-dom";
+
 
 import backend from './api/backend';
 
@@ -15,6 +18,7 @@ mapboxgl.accessToken = "pk.eyJ1IjoicXVvdGVkb3RsYWQiLCJhIjoiY2t1OTVqMmJ1MDE2NDJyc
 
 function App() {
   const mapContainer = useRef(null);
+  const popUpRef = useRef(new mapboxgl.Popup({ offset: 15 }))
   const map = useRef(null);
   const [lng, setLng] = useState(-96.8191214);
   const [lat, setLat] = useState(33.1005264);
@@ -142,11 +146,12 @@ function App() {
                     'geometry': {
                       'type': 'Point',
                       'coordinates': [
-                        -70.9, 42.35
+                        -96.8707, 33.1874
                       ]
                     },
                     'properties': {
-                      'title': 'Mapbox DC'
+                      'title': 'Hooked On Fishing',
+                      'description': 'Looking for small fishing group. Beginnings are welcome! Rods provided.'
                     }
                   }
                 ]
@@ -174,6 +179,31 @@ function App() {
 
         
       });
+
+      map.current.on('click', ({ point }) => {
+        const features = map.current.queryRenderedFeatures(point, {
+          layers: ['points']
+        });
+
+        if (!features.length) {
+          return;
+        }
+
+        const feature = features[0]
+        const popUpNode = document.createElement("div");
+        
+        ReactDOM.render(
+          <MarkerPopUp
+            title={feature.properties.title}
+            description={feature.properties.description}
+          />,
+          popUpNode
+        )
+        popUpRef.current
+          .setLngLat(feature.geometry.coordinates)
+          .setDOMContent(popUpNode)
+          .addTo(map.current)
+      });
     });
 
     return (
@@ -183,7 +213,7 @@ function App() {
           <Grid container component={Paper}>
             <Grid item xs={4}>
               <Item>
-                <EventList />
+                <EventList text="single-line item from prop"/>
               </Item>
             </Grid>
             <Grid item xs={8}>

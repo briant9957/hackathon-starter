@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import App from './App';
+import 'mapbox-gl/dist/mapbox-gl.css';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(

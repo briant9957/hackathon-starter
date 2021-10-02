@@ -2,13 +2,18 @@
   position: relative;
   height: 90vh;
   width: 100%;
-  padding-left: 5%;
-  }
+}
+
+.card-style {
+  display: 'block';
+  width: '30vw';
+  height: '45vw';
+}
 
 .ListItem {
-  
+  margin-bottom: 5px;
 }
 
 .ListParent {
-
+  height: 90vh;
 }
