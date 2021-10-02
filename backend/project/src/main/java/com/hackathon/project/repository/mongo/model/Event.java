@@ -15,5 +15,6 @@ public class Event {
     Integer capacity;
     LocalDateTime dateTimeCreated;
     String description;
+    String[] memberNames;
     
 }
