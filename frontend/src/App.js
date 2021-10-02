@@ -1,8 +1,9 @@
 import logo from './logo.svg';
 import './App.css';
-import ConnectionCheck from './connectionCheck';
+import EventList from './eventList';
 import React, { useRef, useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
+
 
 mapboxgl.accessToken = "pk.eyJ1IjoicXVvdGVkb3RsYWQiLCJhIjoiY2t1OTVqMmJ1MDE2NDJycDR4MWhkODliOCJ9.lRkX5bD32vEYwa2Bs-6lew";
 
@@ -33,11 +34,11 @@ function App() {
       });
 
     return (
-      <div>
-          <div className="sidebar">
-            Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
-          </div>
-        <div ref={mapContainer} className="map-container" />
+      <div style={{display: "flex"}}>
+        <EventList />
+        <div style={{flexGrow: 2}}>
+          <div ref={mapContainer} className="map-container" />
+        </div>
       </div>
       );
 }
