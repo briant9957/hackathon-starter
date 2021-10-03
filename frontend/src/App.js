@@ -42,7 +42,7 @@ function App() {
   const [lat, setLat] = useState(33.1005264);
   const [zoom, setZoom] = useState(8);
   const [radius, setRadius] = useState(10.0);
-  const [events, setEvents] = useState();
+  const [events, setEvents] = useState([]);
   const [numberRegistered, setNumberRegistered] = useState(0);
   const [mapBoxData, setMapBoxData] = useState({});
   var popUpNode = useRef(null);
@@ -56,8 +56,8 @@ function App() {
 
 
   
-  const getEvents = async (getRadius, getLongitude, getLatitude, getLimit) => {
-    await backend.get('/events-nearby', {
+  const getEvents = (getRadius, getLongitude, getLatitude, getLimit) => {
+    backend.get('/events-nearby', {
       params: {
         radius: getRadius,
         longitude: getLongitude,
@@ -68,7 +68,7 @@ function App() {
     })
     .then(response => {
         console.log(response);
-        setEvents(response.data);
+        setEvents(...events, response.data);
     })
   }
 
@@ -119,6 +119,10 @@ function App() {
   const handleRadiusChange = (event) => {
     setRadius(event.target.value);
   };
+
+  useEffect(() => {
+    console.log('events changed');
+  }, [events]);
 
   useEffect(() => {
     if (!map.current || !popUpNode.current) return;
