@@ -11,7 +11,7 @@ function RegisterButton(props) {
         props.setMapBoxData(updatedMapBoxData);
     }
 
-    return <Button variant="outlined" onClick={handleClick}>Register</Button>;  
+    return <Button variant="outlined" onClick={props.handleClick}>Register</Button>;  
 } 
 
 export default RegisterButton;

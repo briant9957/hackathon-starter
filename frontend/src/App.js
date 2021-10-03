@@ -50,7 +50,7 @@ function App() {
   const [zoom, setZoom] = useState(8);
   const [radius, setRadius] = useState(10.0);
   const [events, setEvents] = useState([]);
-  const [numberRegistered, setNumberRegistered] = useState(0);
+  // const [numberRegistered, setNumberRegistered] = useState(0);
   const [mapBoxData, setMapBoxData] = useState({});
 
   const emptyEvent = {
@@ -153,7 +153,7 @@ function App() {
 
 
   
-  const getEvents = (getRadius, getLongitude, getLatitude, getLimit) => {
+  const getEvents = async (getRadius, getLongitude, getLatitude, getLimit) => {
     backend.get('/events-nearby', {
       params: {
         radius: getRadius,
@@ -165,6 +165,61 @@ function App() {
     })
     .then(response => {
         setEvents(response.data);
+
+        const newFeatures = []
+
+        for (let idx in response.data) {
+          const mapBoxEvent = response.data[idx];
+          const registeredCount = mapBoxEvent.memberNames ? mapBoxEvent.memberNames.length : 0
+          newFeatures.push({
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: [
+                mapBoxEvent.location.coordinates[0], mapBoxEvent.location.coordinates[1]
+              ]
+            },
+            properties: {
+              title: mapBoxEvent.title,
+              description: mapBoxEvent.description,
+              capacity: mapBoxEvent.capacity,
+              numberRegistered: registeredCount
+            }
+          });
+        }
+    
+        const updatedMapBoxData = {...mapBoxData};
+        updatedMapBoxData.data.features = newFeatures;
+        map.current.getSource("points").setData(updatedMapBoxData.data);
+    
+        for (const { geometry, properties } of updatedMapBoxData.data.features) {
+          // create a HTML element for each feature
+          const el = document.createElement('div');
+          const popUp = document.createElement("div");
+
+          ReactDOM.render(
+            <MarkerPopUp
+              title={properties.title}
+              description={properties.description}
+              numberRegistered={properties.numberRegistered}
+              capacity={properties.capacity}
+              mapBoxData={mapBoxData}
+              setMapBoxData={setMapBoxData}
+              mapBoxGLMap={map.current}
+            />,
+            popUp
+          )
+          el.className = 'marker';
+        
+          // make a marker for each feature and add to the map
+          new mapboxgl.Marker(el)
+          .setLngLat(geometry.coordinates)
+          .setPopup(
+            new mapboxgl.Popup({ offset: 15 })
+              .setDOMContent(popUp)
+          )
+          .addTo(map.current);
+        }
     })
   }
 
@@ -214,12 +269,12 @@ function App() {
     setRadius(event.target.value);
   };
 
-  useEffect(() => {
-    if (!map.current || !popUpNode.current) return;
-    console.log('changed data')
-    map.current.getSource("points").setData(mapBoxData.data);
-    popUpNode.current.querySelector('#capacity').innerText = mapBoxData.data.features[0].properties.capacity
-  }, [mapBoxData]);
+  // useEffect(() => {
+  //   if (!map.current || !popUpNode.current) return;
+  //   console.log('changed data')
+  //   map.current.getSource("points").setData(mapBoxData.data);
+  //   popUpNode.current.querySelector('#capacity').innerText = mapBoxData.data.features[0].properties.capacity
+  // }, [mapBoxData]);
 
   useEffect(() => {
     if (map.current) return; // initialize map only once
@@ -331,19 +386,19 @@ function App() {
                 'type': 'FeatureCollection',
                 'features': [
                   {
-                    'type': 'Feature',
-                    'geometry': {
-                      'type': 'Point',
-                      'coordinates': [
-                        -96.8707, 33.1874
-                      ]
-                    },
-                    'properties': {
-                      'title': 'Hooked On Fishing',
-                      'description': 'Looking for small fishing group. Beginnings are welcome! Rods provided.',
-                      'capacity': '3',
-                      'numberRegistered': '1'
-                    }
+                    // 'type': 'Feature',
+                    // 'geometry': {
+                    //   'type': 'Point',
+                    //   'coordinates': [
+                    //     -96.8707, 33.1874
+                    //   ]
+                    // },
+                    // 'properties': {
+                    //   'title': 'Hooked On Fishing',
+                    //   'description': 'Looking for small fishing group. Beginnings are welcome! Rods provided.',
+                    //   'capacity': '3',
+                    //   'numberRegistered': '1'
+                    // }
                   }
                 ]
               }
@@ -354,7 +409,6 @@ function App() {
               'type': 'symbol',
               'source': 'points',
               'layout': {
-                'icon-image': 'custom-marker',
                 // get the title name from the source's "title" property
                 'text-field': ['get', 'title'],
                 'text-font': [
@@ -371,34 +425,34 @@ function App() {
         
       });
 
-      map.current.on('click', ({ point }) => {
-        const features = map.current.queryRenderedFeatures(point, {
-          layers: ['points']
-        });
+      // map.current.on('click', ({ point }) => {
+      //   const features = map.current.queryRenderedFeatures(point, {
+      //     layers: ['points']
+      //   });
 
-        if (!features.length) {
-          return;
-        }
+      //   if (!features.length) {
+      //     return;
+      //   }
 
-        const feature = features[0]
-        popUpNode.current = document.createElement("div");
+      //   const feature = features[0]
+      //   popUpNode.current = document.createElement("div");
 
-        ReactDOM.render(
-          <MarkerPopUp
-            title={feature.properties.title}
-            description={feature.properties.description}
-            capacity={feature.properties.capacity}
-            mapBoxData={mapBoxData}
-            setMapBoxData={setMapBoxData}
-            mapBoxGLMap={map.current}
-          />,
-          popUpNode.current
-        )
-        popUpRef.current
-          .setLngLat(feature.geometry.coordinates)
-          .setDOMContent(popUpNode.current)
-          .addTo(map.current)
-      });
+      //   ReactDOM.render(
+      //     <MarkerPopUp
+      //       title={feature.properties.title}
+      //       description={feature.properties.description}
+      //       capacity={feature.properties.capacity}
+      //       mapBoxData={mapBoxData}
+      //       setMapBoxData={setMapBoxData}
+      //       mapBoxGLMap={map.current}
+      //     />,
+      //     popUpNode.current
+      //   )
+      //   popUpRef.current
+      //     .setLngLat(feature.geometry.coordinates)
+      //     .setDOMContent(popUpNode.current)
+      //     .addTo(map.current)
+      // });
     });
 
     return (
