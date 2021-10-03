@@ -42,7 +42,7 @@ function App() {
   const [lat, setLat] = useState(33.1005264);
   const [zoom, setZoom] = useState(8);
   const [radius, setRadius] = useState(10.0);
-  const [events, setEvents] = useState({});
+  const [events, setEvents] = useState([]);
   // const [numberRegistered, setNumberRegistered] = useState(0);
   const [mapBoxData, setMapBoxData] = useState({});
   var popUpNode = useRef(null);
