@@ -1,15 +1,9 @@
-import {React, useState} from 'react';
-import { makeStyles, styled } from '@mui/styles'
+import {React} from 'react';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Collapse from '@mui/material/Collapse';
 import Typography from '@mui/material/Typography';
 import RegisterButton from '../RegisterButton';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-
 
 export default function ExpandedCard(props) {
 
