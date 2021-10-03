@@ -42,7 +42,7 @@ function App() {
   const [lat, setLat] = useState(33.1005264);
   const [zoom, setZoom] = useState(8);
   const [radius, setRadius] = useState(10.0);
-  const [events, setEvents] = useState();
+  const [events, setEvents] = useState([]);
   const [numberRegistered, setNumberRegistered] = useState(0);
   const [mapBoxData, setMapBoxData] = useState({});
   var popUpNode = useRef(null);
@@ -67,7 +67,6 @@ function App() {
       headers: {'Access-Control-Allow-Origin': '*'}
     })
     .then(response => {
-        console.log(response);
         setEvents(response.data);
     })
   }
@@ -75,6 +74,7 @@ function App() {
   const searchArea = () => {
     console.log(lng);
     console.log(lat);
+    console.log(events);
     if (lng && lat) {
       if (map.current.getLayer('radiusCircle')){
         map.current.removeLayer('radiusCircle');
@@ -312,7 +312,7 @@ function App() {
               </FormControl>
             </Box>
             <Item>
-              <EventList text="single-line item from prop"/>
+              <EventList arrayList={events} text="single-line item from prop"/>
             </Item>
         </Box>
         <Grid item xs={8}>

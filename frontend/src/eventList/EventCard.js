@@ -13,6 +13,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 export default function ExpandedCard(props) {
 
+  console.log(props)
   /* const FormattedRegisterButton = styled(RegisterButton)({
     background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
     border: 0,
@@ -22,37 +23,41 @@ export default function ExpandedCard(props) {
     height: 48,
     padding: '0 30px'
   }); */
+  const getNumberOfParticipants = (memberList) => {
+    if (memberList == null || memberList.length == null) {
+      return 0;
+    } else {
+      return memberList.length;
+    }
+  }
   
   return (
-      <Card sx={{ maxWidth: 1 }}>
+    <Card sx={{ maxWidth: 1 }}>
       <CardHeader
-        // title={props.title}
-        title={"Walkin around I guess"}
-        // subheader={props.activityType}
-        subheader={"Physical Activity Opportunity"}
+        title={props.title}
+        // title={"Walkin around I guess"}
+        subheader={props.activityType}
+        // subheader={"Physical Activity Opportunity"}
       />
       <CardContent>
         <Typography variant="body2" color="text.secondary">
-          {/* {props.activityDate} */}
-          11/11/2021 12:00:00 PM
+          {props.activityStartDate}
+          {props.activityEndDate}
+          {/* 11/11/2021 12:00:00 PM */}
         </Typography>
         <Typography variant="subtitle2" color="text.secondary">
-          {/* {props.activityCapacity} */}
-          30 Spots Total
-        </Typography>
-        <Typography variant="subtitle2" color="text.secondary">
-          {/* {props.activityNumRegistered} */}
-          12 Spots Registered
+          {getNumberOfParticipants(props.activityNumRegistered)} / {props.activityCapacity}
+          {/* 30 Spots Total */}
         </Typography>
       </CardContent>
         <CardContent>
           <Typography >
-            {/* {props.activityDescription} */}
-            Come on down and walk around!! It's really fun 123123123132212 31231231231231231231
+            {props.activityDescription}
+            {/* Come on down and walk around!! It's really fun 123123123132212 31231231231231231231 */}
           </Typography>
         <RegisterButton className="register-button" aria-label="Register For Event" >
         </RegisterButton>
         </CardContent>
-    </Card>
+      </Card>
     );
   }

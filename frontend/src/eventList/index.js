@@ -7,12 +7,31 @@ import { CardContent } from '@mui/material';
 import ExpandedCard from './EventCard';
 
 export default function EventList(props) {
-  function generate(element) {
-    return [0, 1, 2].map((value) =>
-      React.cloneElement(element, {
-        key: value,
-      }),
-    );
+  // function generate(element, arrayList) {
+  //   return arrayList =>
+  //     React.cloneElement(element, {
+  //       key: value,
+  //     }),
+  //   );
+  // }
+  const getCardList = () => {
+    console.log(props.arrayList)
+    return props.arrayList.map((value, key) => (
+      <Card 
+        key={key}
+        variant="outlined" 
+        className="ListItem">
+        <ExpandedCard
+          title={value.title}
+          activityType={value.activityType}
+          activityStartDate={value.start}
+          activityEndDate={value.end}
+          activityCapacity={value.capacity}
+          activityNumRegistered={value.memberNames}
+          activityDescription={value.description}>
+        </ExpandedCard>
+      </Card>
+    ));
   }
 
   return (
@@ -21,14 +40,7 @@ export default function EventList(props) {
     className="ListParent" 
     dense={false}
     >
-    {generate(
-      <Card variant="outlined" className="ListItem">
-        <ExpandedCard>
-          primary={props.text}
-          secondary={false ? 'Secondary text' : null}
-        </ExpandedCard>
-      </Card>,
-    )}
+    {getCardList()}
   </List>
   )
 }
