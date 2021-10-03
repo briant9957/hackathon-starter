@@ -41,17 +41,41 @@ function App() {
   }));  
 
   const classes = useStyles();
+  const defaultLongitude = -96.8191214;
+  const defaultLatitude = 33.1005264;
 
   const mapContainer = useRef(null);
   const popUpRef = useRef(new mapboxgl.Popup({ offset: 15 }))
   const map = useRef(null);
-  const [lng, setLng] = useState(-96.8191214);
-  const [lat, setLat] = useState(33.1005264);
-  const [zoom, setZoom] = useState(8);
+  const [lng, setLng] = useState(defaultLongitude);
+  const [lat, setLat] = useState(defaultLatitude);
+  const [zoom, setZoom] = useState(10);
   const [radius, setRadius] = useState(10.0);
   const [events, setEvents] = useState([]);
   // const [numberRegistered, setNumberRegistered] = useState(0);
-  const [mapBoxData, setMapBoxData] = useState({});
+  const [mapBoxData, setMapBoxData] = useState({
+    'type': 'geojson',
+    'data': {
+      'type': 'FeatureCollection',
+      'features': [
+        {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [
+              defaultLongitude, defaultLatitude
+            ]
+          },
+          'properties': {
+            'title': 'Hooked On Fishing',
+            'description': 'Looking for small fishing group. Beginnings are welcome! Rods provided.',
+            'capacity': '3',
+            'numberRegistered': '1'
+          }
+        }
+      ]
+    }
+  });
 
   const emptyEvent = {
     "title": "",
@@ -257,8 +281,8 @@ function App() {
           'source': 'focusRadius',
           'type': 'circle',
           'paint': {
-            'circle-radius': radius,
-            'circle-color': '#007cbf'
+            'circle-radius': 5,
+            'circle-color': 'orange'
           }
         });
     }
@@ -300,41 +324,10 @@ function App() {
 
         const geocoder = new MapboxGeocoder({
           accessToken: mapboxgl.accessToken,
-          mapboxgl: mapboxgl
+          mapboxgl: mapboxgl,
+          color: 'orange'
         })
         map.current.addControl(geocoder, 'top-left');
-        geocoder.on('result', function(ev) {
-          setAddress(ev.result.place_name);
-          setLocation(ev.result.geometry);
-          setTimeout(function(){
-            console.log("release search after 2 seconds");
-            searchArea();
-          }, 2000); 
-        });
-
-        map.current.on("result", (e) => {
-          function getAddressByType(value, index, array) {
-            if (value.id.match(/country.*/)) {
-             console.log(value.text)
-            } else if (value.id.match(/region.*/)) {
-             console.log(value.text)
-            } else if (value.id.match(/postcode.*/)) {
-             console.log(value.text)
-            } else if (value.id.match(/district.*/)) {
-             console.log(value.text)
-            } else if (value.id.match(/place.*/)) {
-                console.log(value.text)
-            } else if (value.id.match(/neighborhood.*/)) {
-                  console.log(value.text)
-            } else if (value.id.match(/address.*/)) {
-                  console.log(value.text)
-            } else if (value.id.match(/poi.*/)) {
-             console.log(value.text)
-            }
-          }
-          e.result.context.forEach(getAddressByType);
-          console.log(JSON.stringify(e))
-        });
 
         // Add geolocate control to the map.
         map.current.addControl(
@@ -355,30 +348,6 @@ function App() {
           (error, image) => {
             if (error) throw error;
             map.current.addImage('custom-marker', image);
-            
-            setMapBoxData({
-              'type': 'geojson',
-              'data': {
-                'type': 'FeatureCollection',
-                'features': [
-                  {
-                    'type': 'Feature',
-                    'geometry': {
-                      'type': 'Point',
-                      'coordinates': [
-                        -96.8707, 33.1874
-                      ]
-                    },
-                    'properties': {
-                      'title': 'Hooked On Fishing',
-                      'description': 'Looking for small fishing group. Beginnings are welcome! Rods provided.',
-                      'capacity': '3',
-                      'numberRegistered': '1'
-                    }
-                  }
-                ]
-              }
-            })
 
             map.current.addSource('points', {
               'type': 'geojson',
@@ -422,7 +391,14 @@ function App() {
           }
         )
 
-        
+        geocoder.on('result', function(ev) {
+          setAddress(ev.result.place_name);
+          setLocation(ev.result.geometry);
+          setTimeout(function(){
+            console.log("release search after 2 seconds");
+            searchArea();
+          }, 2000); 
+        });
       });
 
       // map.current.on('click', ({ point }) => {
