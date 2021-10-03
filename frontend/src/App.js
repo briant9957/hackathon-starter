@@ -26,10 +26,6 @@ mapboxgl.accessToken = "pk.eyJ1IjoicXVvdGVkb3RsYWQiLCJhIjoiY2t1OTVqMmJ1MDE2NDJyc
 
 function App() {
   const useStyles = makeStyles(theme => ({
-    buttonGrid: {
-      minHeight: '30px',
-      marginTop: '10px'
-    },
     button: {
       display: 'flex',
       justify: 'center',
@@ -242,12 +238,21 @@ function App() {
 
     return (
       <Grid container component={Paper} >
-        <Grid item justify="center" xs={4}>
-          <Box style={{maxHeight: '100%', overflow: 'auto'}} className="ListParent" >
-            <Grid item 
-              p={2}
+        <Box item justify="center" xs={4} 
+              component={Grid}
+              sx={{ 
+                boxShadow: 3,
+                zIndex: "drawer"
+              }}
+              >
+            <Box item 
+              className="SearchFormGrid"
               align="center"
-              className={classes.buttonGrid}>
+              component={Grid}
+              styles={{
+                zIndex: 1000
+              }}
+              p="2vh">
               <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">Radius</InputLabel>
                 <Select
@@ -266,12 +271,11 @@ function App() {
                   search this area
                 </Button>
               </FormControl>
-            </Grid>
+            </Box>
             <Item>
               <EventList text="single-line item from prop"/>
             </Item>
-          </Box>
-        </Grid>
+        </Box>
         <Grid item xs={8}>
           <div ref={mapContainer} className="map-container" />
         </Grid>

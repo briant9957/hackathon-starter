@@ -20,5 +20,9 @@ body {
 }
 
 .ListParent {
-  height: 100vh;
+  height: 82vh;
+}
+
+.SearchFormGrid {
+  height: 16vh;
 }

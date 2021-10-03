@@ -16,7 +16,11 @@ export default function EventList(props) {
   }
 
   return (
-  <List dense={false}>
+  <List 
+    style={{maxHeight: '100%', overflow: 'auto'}} 
+    className="ListParent" 
+    dense={false}
+    >
     {generate(
       <Card variant="outlined" className="ListItem">
         <ExpandedCard>
