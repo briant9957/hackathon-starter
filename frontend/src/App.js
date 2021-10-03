@@ -104,6 +104,7 @@ function App() {
             <MarkerPopUp
               title={properties.title}
               description={properties.description}
+              numberRegistered={properties.numberRegistered}
               capacity={properties.capacity}
               mapBoxData={mapBoxData}
               setMapBoxData={setMapBoxData}
