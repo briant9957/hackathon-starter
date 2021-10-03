@@ -43,7 +43,9 @@ function App() {
   const [zoom, setZoom] = useState(8);
   const [radius, setRadius] = useState(10.0);
   const [events, setEvents] = useState();
-  
+  const [numberRegistered, setNumberRegistered] = useState(0);
+  const [mapBoxData, setMapBoxData] = useState({});
+  var popUpNode = useRef(null);
 
   const Item = styled(Paper)(({ theme }) => ({
     ...theme.typography.body2,
@@ -119,6 +121,13 @@ function App() {
   };
 
   useEffect(() => {
+    if (!map.current || !popUpNode.current) return;
+    console.log('changed data')
+    map.current.getSource("points").setData(mapBoxData.data);
+    popUpNode.current.querySelector('#capacity').innerText = mapBoxData.data.features[0].properties.capacity
+  }, [mapBoxData]);
+
+  useEffect(() => {
     if (map.current) return; // initialize map only once
     map.current = new mapboxgl.Map({
         container: mapContainer.current,
@@ -166,6 +175,30 @@ function App() {
             if (error) throw error;
             map.current.addImage('custom-marker', image);
             
+            setMapBoxData({
+              'type': 'geojson',
+              'data': {
+                'type': 'FeatureCollection',
+                'features': [
+                  {
+                    'type': 'Feature',
+                    'geometry': {
+                      'type': 'Point',
+                      'coordinates': [
+                        -96.8707, 33.1874
+                      ]
+                    },
+                    'properties': {
+                      'title': 'Hooked On Fishing',
+                      'description': 'Looking for small fishing group. Beginnings are welcome! Rods provided.',
+                      'capacity': '3',
+                      'numberRegistered': '1'
+                    }
+                  }
+                ]
+              }
+            })
+
             map.current.addSource('points', {
               'type': 'geojson',
               'data': {
@@ -181,7 +214,9 @@ function App() {
                     },
                     'properties': {
                       'title': 'Hooked On Fishing',
-                      'description': 'Looking for small fishing group. Beginnings are welcome! Rods provided.'
+                      'description': 'Looking for small fishing group. Beginnings are welcome! Rods provided.',
+                      'capacity': '3',
+                      'numberRegistered': '1'
                     }
                   }
                 ]
@@ -220,18 +255,22 @@ function App() {
         }
 
         const feature = features[0]
-        const popUpNode = document.createElement("div");
-        
+        popUpNode.current = document.createElement("div");
+
         ReactDOM.render(
           <MarkerPopUp
             title={feature.properties.title}
             description={feature.properties.description}
+            capacity={feature.properties.capacity}
+            mapBoxData={mapBoxData}
+            setMapBoxData={setMapBoxData}
+            mapBoxGLMap={map.current}
           />,
-          popUpNode
+          popUpNode.current
         )
         popUpRef.current
           .setLngLat(feature.geometry.coordinates)
-          .setDOMContent(popUpNode)
+          .setDOMContent(popUpNode.current)
           .addTo(map.current)
       });
     });
