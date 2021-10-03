@@ -16,7 +16,17 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
+import Typography from '@mui/material/Typography';
+
+import Modal from '@mui/material/Modal';
+import TextField from '@mui/material/TextField';
+import TextareaAutosize from '@mui/material/TextareaAutosize';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DateTimePicker from '@mui/lab/DateTimePicker';
+
 import { styled } from '@mui/material/styles';
+
 import ReactDOM from "react-dom";
 
 
@@ -27,9 +37,6 @@ mapboxgl.accessToken = "pk.eyJ1IjoicXVvdGVkb3RsYWQiLCJhIjoiY2t1OTVqMmJ1MDE2NDJyc
 function App() {
   const useStyles = makeStyles(theme => ({
     button: {
-      display: 'flex',
-      justify: 'center',
-      margin: '5px'
     },
   }));  
 
@@ -45,6 +52,96 @@ function App() {
   const [events, setEvents] = useState([]);
   const [numberRegistered, setNumberRegistered] = useState(0);
   const [mapBoxData, setMapBoxData] = useState({});
+
+  const emptyEvent = {
+    "title": "",
+    "start": new Date(),
+    "end": new Date(),
+    "capacity": 5,
+    "description": "This is going to be a fun DND event with your Dallas locals! Bring your own snacks",
+    "location":  {
+        "type": "Point",
+        "coordinates":[-96.87071, 33.1873811]
+    },
+    "members":[]
+  }
+
+  const [eventName, setEventName] = useState(undefined);
+  const [start, setStart] = useState(new Date());
+  const [end, setEnd] = useState(new Date());
+  const [capacity, setCapacity] = useState(5);
+  const [description, setDescription] = useState(undefined);
+  const [location, setLocation] = useState();
+  const [address, setAddress] = useState();
+
+  const submitNewEvent = () => {
+    backend.post('/events', {
+      data: {
+        title: eventName,
+        start: start.toUTCString,
+        end: end.toUTCString,
+        capacity: capacity,
+        description: description,
+        location: location,
+        address: address,
+        members:[]
+      },
+      headers: {'Access-Control-Allow-Origin': '*'}
+    })
+    .then(response => {
+        console.log(response)
+        setEvents(response.data);
+        emptyCreateEventForm();
+    })
+  }
+
+  const emptyCreateEventForm = () => {
+    console.log(eventName)
+    setEventName("")
+    setStart(new Date())
+    setEnd(new Date())
+    setCapacity(5)
+    setDescription("")
+  }
+
+  const changeStart = (datetime) => {
+    setStart(datetime)
+  }
+  
+  const changeEnd = (datetime) => {
+    setEnd(datetime)
+  }
+
+  const changeEventName = (event) => {
+    setEventName(event.target.value)
+  }
+
+  const changeCapacity = (event) => {
+    setCapacity(event.target.value)
+  }
+
+  const changeDescription = (event) => {
+    setDescription(event.target.value)
+  }
+
+
+  // Modal 
+  const [open, setOpen] = React.useState(false);
+  const openCreateModal = () => setOpen(true);
+  const closeCreateModal = () => setOpen(false);
+
+  const modalStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    borderRadius: 2,
+    p: 4,
+  };
+
   var popUpNode = useRef(null);
 
   const Item = styled(Paper)(({ theme }) => ({
@@ -145,12 +242,44 @@ function App() {
 
       map.current.on('load', () => {
         // Add the control to the map.
-        map.current.addControl(
-          new MapboxGeocoder({
-            accessToken: mapboxgl.accessToken,
-            mapboxgl: mapboxgl
-          }), 'top-left'
-        );
+
+        const geocoder = new MapboxGeocoder({
+          accessToken: mapboxgl.accessToken,
+          mapboxgl: mapboxgl
+        })
+        map.current.addControl(geocoder, 'top-left');
+        geocoder.on('result', function(ev) {
+          setAddress(ev.result.place_name);
+          setLocation(ev.result.geometry);
+          setTimeout(function(){
+            console.log("release search after 2 seconds");
+            searchArea();
+          }, 2000); 
+        });
+
+        map.current.on("result", (e) => {
+          function getAddressByType(value, index, array) {
+            if (value.id.match(/country.*/)) {
+             console.log(value.text)
+            } else if (value.id.match(/region.*/)) {
+             console.log(value.text)
+            } else if (value.id.match(/postcode.*/)) {
+             console.log(value.text)
+            } else if (value.id.match(/district.*/)) {
+             console.log(value.text)
+            } else if (value.id.match(/place.*/)) {
+                console.log(value.text)
+            } else if (value.id.match(/neighborhood.*/)) {
+                  console.log(value.text)
+            } else if (value.id.match(/address.*/)) {
+                  console.log(value.text)
+            } else if (value.id.match(/poi.*/)) {
+             console.log(value.text)
+            }
+          }
+          e.result.context.forEach(getAddressByType);
+          console.log(JSON.stringify(e))
+        });
 
         // Add geolocate control to the map.
         map.current.addControl(
@@ -274,6 +403,110 @@ function App() {
 
     return (
       <Grid container component={Paper} >
+        <Modal
+          open={open}
+          onClose={closeCreateModal}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={modalStyle}>
+            <Grid container spacing={1} direction="column">
+              <Grid item>
+                <Typography id="modal-modal-title" variant="h6" component="h2">
+                  Create a new Event
+                </Typography>
+              </Grid>
+
+              <Grid item>
+                <Grid container
+                  spacing={2} 
+                  direction="column"
+                  align='center'>
+                  <Grid item>
+                    <TextField
+                      fullWidth
+                      disabled
+                      label="Address"
+                      id="address"
+                      value={address}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item>
+                    <TextField
+                        fullWidth
+                      label="Event Name"
+                      id="eventName"
+                      value={eventName}
+                      onChange={changeEventName}
+                      size="small"
+                    />
+                  </Grid>
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <Grid item>
+                      <DateTimePicker
+                        fullWidth
+                        label="Start Time"
+                        value={start}
+                        onChange={changeStart}
+                        renderInput={(params) => <TextField {...params} />}
+                      />
+                    </Grid>
+                    <Grid item>
+                      <DateTimePicker
+                        fullWidth
+                        label="End Time"
+                        value={end}
+                        onChange={changeEnd}
+                        renderInput={(params) => <TextField {...params} />}
+                      />
+                    </Grid>
+                  </LocalizationProvider>
+                  <Grid item>
+                    <TextField
+                      fullWidth
+                      label="Capacity"
+                      id="capacity"
+                      value={capacity}
+                      onChange={changeCapacity}
+                      type='number'
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item align='left'>
+                    <Typography id="modal-modal-title" variant="h6" component="h6">
+                      Description
+                    </Typography>
+                    <TextareaAutosize
+                      style={{ 
+                        width: '100%',
+                        minHeight: 200 
+                      }}
+                      label="Description"
+                      id="description"
+                      onChange={changeDescription}
+                      value={description}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              <Grid container mt={2} spacing={1}>
+                <Grid item>
+                <Button className={classes.button} variant="outlined" onClick={emptyCreateEventForm} color="error">
+                  Reset
+                </Button>
+                </Grid>
+                <Grid item>
+                <Button className={classes.button} variant="contained" onClick={submitNewEvent}>
+                  Create
+                </Button>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Box>
+        </Modal>
+
         <Box item justify="center" xs={4} 
               component={Grid}
               sx={{ 
@@ -285,28 +518,39 @@ function App() {
               className="SearchFormGrid"
               align="center"
               component={Grid}
+              sx={{ borderBottom: 3 }}
               styles={{
                 zIndex: 1000
               }}
               p="2vh">
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Radius</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={radius}
-                  label="Radius"
-                  onChange={handleRadiusChange}
-                >
-                  <MenuItem value={10}>10</MenuItem>
-                  <MenuItem value={20}>20</MenuItem>
-                  <MenuItem value={30}>30</MenuItem>
-                </Select>
-                <br/>
-                <Button className={classes.button} variant="contained" onClick={searchArea}>
-                  search this area
-                </Button>
-              </FormControl>
+                <Grid direction="column" container spacing={2} justify="center" align="center">
+                  <Grid item>
+                    <Button fullWidth className={classes.button} variant="outlined" onClick={openCreateModal} >
+                      Create Event
+                    </Button>
+                  </Grid>
+                  <Grid item>
+                    <FormControl fullWidth>
+                      <InputLabel id="demo-simple-select-label">Radius</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={radius}
+                        label="Radius"
+                        onChange={handleRadiusChange}
+                      >
+                        <MenuItem value={10}>10</MenuItem>
+                        <MenuItem value={20}>20</MenuItem>
+                        <MenuItem value={30}>30</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item>
+                    <Button fullWidth className={classes.button} variant="contained" onClick={searchArea}>
+                      search this area
+                    </Button>
+                  </Grid>
+                </Grid>
             </Box>
             <Item>
               <EventList arrayList={events} text="single-line item from prop"/>

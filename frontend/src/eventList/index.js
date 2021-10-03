@@ -15,8 +15,10 @@ export default function EventList(props) {
   //   );
   // }
   const getCardList = () => {
+    if (props.arrayList === undefined) return;
     return props.arrayList.map((value, key) => (
       <Card 
+        sx={{marginTop:1, marginBottom: 1, marginLeft:2, marginRight:2}}
         key={key}
         variant="outlined" 
         className="ListItem">

@@ -8,7 +8,7 @@ import Collapse from '@mui/material/Collapse';
 import Typography from '@mui/material/Typography';
 import RegisterButton from '../RegisterButton';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Grid from '@mui/material/Grid';
 
 
 export default function ExpandedCard(props) {
@@ -29,32 +29,58 @@ export default function ExpandedCard(props) {
     }
   }
   
+  const getHumanReadableDates = (dateString) => {
+    if (dateString) {
+      let date = new Date(dateString); 
+      return date.toLocaleString();
+    } else {
+      return dateString;
+    }
+  }
+
+  const renderParticipantsText = (registeredCount, capacity) => {
+    if (registeredCount === capacity) {
+      return (
+        <Typography variant="subtitle2" color="error.main">
+          Capacity: {registeredCount} / {capacity}
+        </Typography>
+      )
+    } else {
+      return (
+        <Typography variant="subtitle2" color="text.secondary">
+          Capacity: {registeredCount} / {capacity}
+        </Typography>
+      )
+    }
+  }
+
   return (
     <Card sx={{ maxWidth: 1 }}>
       <CardHeader
         title={props.title}
-        // title={"Walkin around I guess"}
         subheader={props.activityType}
-        // subheader={"Physical Activity Opportunity"}
       />
-      <CardContent>
-        <Typography variant="body2" color="text.secondary">
-          {props.activityStartDate}
-          {props.activityEndDate}
-          {/* 11/11/2021 12:00:00 PM */}
-        </Typography>
-        <Typography variant="subtitle2" color="text.secondary">
-          {getNumberOfParticipants(props.activityNumRegistered)} / {props.activityCapacity}
-          {/* 30 Spots Total */}
-        </Typography>
-      </CardContent>
         <CardContent>
-          <Typography >
-            {props.activityDescription}
-            {/* Come on down and walk around!! It's really fun 123123123132212 31231231231231231231 */}
-          </Typography>
-        <RegisterButton className="register-button" aria-label="Register For Event" >
-        </RegisterButton>
+          <Grid>
+            <Grid pb={1}>
+              <Typography>
+                {props.activityDescription}
+              </Typography>
+            </Grid>
+
+            <Grid>
+              <Typography variant="body2" color="text.secondary">
+                Starts: {getHumanReadableDates(props.activityStartDate)}
+                <br/>
+                Ends: {getHumanReadableDates(props.activityEndDate)}
+              </Typography>
+              {renderParticipantsText(getNumberOfParticipants(props.activityNumRegistered), props.activityCapacity)}
+            </Grid>
+
+            <Grid pt={1} align="right">
+              <RegisterButton className="register-button" aria-label="Register For Event" />
+            </Grid>
+          </Grid>
         </CardContent>
       </Card>
     );

@@ -36,6 +36,7 @@ public class EventsController {
 	private EventRepository eventRepository;
 
 	@PostMapping(value = "/events")
+	@CrossOrigin
 	public ResponseEntity<Event> createEvent(@RequestBody Event event){
 		return ResponseEntity.ok(eventRepository.insert(event));
 	}
