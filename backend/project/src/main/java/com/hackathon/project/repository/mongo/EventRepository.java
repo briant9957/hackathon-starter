@@ -12,4 +12,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface EventRepository extends MongoRepository<Event, String> {
     GeoResults<Event> findEventsNearBy(Point p, Distance d, LimitOperation limitOperation);
+    Event getEventByUuid(String uuid);
 }

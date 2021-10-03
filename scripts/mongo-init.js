@@ -4,7 +4,7 @@ db.event.drop();
 db.event.createIndex({ location: "2dsphere" })
 
 db.event.insertOne({
-    "id": "e04881ea-ea98-467e-bd20-9f8b9346d9b2",
+    "uuid": "e04881ea-ea98-467e-bd20-9f8b9346d9b2",
     "title": "A fun DND party with Dallas Locals",
     "start": "2021-10-10T07:21:10.492",
     "end": "2021-10-10T17:21:10.492",
@@ -24,7 +24,7 @@ db.event.insertOne({
 });
 
 db.event.insertOne({
-    "id": "e04881ea-ea98-467e-bd20-9f8b9346d9b3",
+    "uuid": "e04881ea-ea98-467e-bd20-9f8b9346d9b3",
     "title": "Baseball Game",
     "start": "2021-10-11T20:00:10.492",
     "end": "2021-10-11T23:00:10.492",
@@ -46,7 +46,7 @@ db.event.insertOne({
 });
 
 db.event.insertOne({
-    "id": "bb1c9d56-98cb-4255-b94c-9046fd7330ee",
+    "uuid": "bb1c9d56-98cb-4255-b94c-9046fd7330ee",
     "title": "A Walk in the Park",
     "start": "2021-10-10T07:21:10.492",
     "end": "2021-10-10T17:21:10.492",
@@ -68,7 +68,7 @@ db.event.insertOne({
 })
 
 db.event.insertOne({
-    "id": "27f2e990-216b-42eb-9342-002934f526a4",
+    "uuid": "27f2e990-216b-42eb-9342-002934f526a4",
     "title": "Hooked on Fishing",
     "start": "2021-10-12T23:00:00.000",
     "end": "2021-10-13T00:00:00.000",
@@ -93,7 +93,7 @@ db.event.insertOne({
 })
 
 db.event.insertOne({
-        "id": "c3ca038d-3d3e-4da4-8a8c-0d2d7791fd1d",
+        "uuid": "c3ca038d-3d3e-4da4-8a8c-0d2d7791fd1d",
         "title": "Garden Watching",
         "start": "2021-10-14T14:21:10.492",
         "end": "2021-10-14T16:21:10.492",
@@ -116,7 +116,7 @@ db.event.insertOne({
 })
 
 db.event.insertOne({
-    "id": "70787466-88ed-49ef-8b21-52450bbb9775",
+    "uuid": "70787466-88ed-49ef-8b21-52450bbb9775",
     "title": "Newbie Golf",
     "start": "2021-10-16T14:21:10.492",
     "end": "2021-10-16T17:21:10.492",
