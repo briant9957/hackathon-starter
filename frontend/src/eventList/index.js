@@ -15,7 +15,6 @@ export default function EventList(props) {
   //   );
   // }
   const getCardList = () => {
-    console.log(props.arrayList)
     return props.arrayList.map((value, key) => (
       <Card 
         key={key}

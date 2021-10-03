@@ -56,8 +56,8 @@ function App() {
 
 
   
-  const getEvents = async (getRadius, getLongitude, getLatitude, getLimit) => {
-    await backend.get('/events-nearby', {
+  const getEvents = (getRadius, getLongitude, getLatitude, getLimit) => {
+    backend.get('/events-nearby', {
       params: {
         radius: getRadius,
         longitude: getLongitude,
@@ -72,9 +72,6 @@ function App() {
   }
 
   const searchArea = () => {
-    console.log(lng);
-    console.log(lat);
-    console.log(events);
     if (lng && lat) {
       if (map.current.getLayer('radiusCircle')){
         map.current.removeLayer('radiusCircle');
